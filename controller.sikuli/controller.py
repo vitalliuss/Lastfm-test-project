@@ -1,6 +1,6 @@
 from log import Log
 from tests import Tests
-from sikuli.Sikuli import *
+from sikuli import *
 
 class Controller:
 		

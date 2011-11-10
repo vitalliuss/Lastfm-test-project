@@ -1,4 +1,4 @@
-from sikuli.Sikuli import *
+from sikuli import *
 from datetime import *
 
 class Log:
