@@ -1,0 +1,1 @@
+cmd /c "%SIKULI_HOME%Sikuli-IDE.bat" -r start.sikuli >detailed.log

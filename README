@@ -1,6 +1,12 @@
-Lastfm test project.
-
+####################
+Lastfm test project
+####################
 This project contains test for lastfm social network (http://www.last.fm)
 Test based on Sikuli tool (http://sikuli.org)
+####################
 
+Launch run.cmd to execute scenarios.
+Clean.cmd will clean all temporary files.
+
+########################
 Created by Vitali Shulha.
