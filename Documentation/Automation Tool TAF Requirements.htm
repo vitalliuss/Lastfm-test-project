@@ -1,0 +1,78 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head>
+    <title>Untitled Page</title>
+</head>
+<body>
+    <h1>
+        Automation Tool TAF Requirements</h1>
+    <h2>
+        1. Minimal (without test scenario/execution list support)</h2>
+    <ol>
+        <li>Have to run from command line and be closed silently. </li>
+        <li>Have to generate Test Results Summary (TestResultsSummary.txt) in tab-separated text format. Test Results Summary example could be found in Examples folder of TAF
+            Core package</li>
+        <li>Test Results Summary should contains the following columns:
+        </li>
+        <ol><li><strong>Test Case ID</strong> - test case ID.</li>
+        <li><strong>Description</strong> - test case description.</li>
+        <li><strong>Status</strong> - test case status (Passed/Failed/Not Executed).</li>
+        <li><strong>Comment</strong> - comment from execution list + any additional.</li>
+        <li><strong>Details</strong> - any details found during test case execution, e.g. reason
+            of test case failure.</li>
+            <li><strong>Execution Time</strong> - test case execution time.</li>
+            </ol>
+    </ol>
+    <h3>Minimal functional scheme of Automation Tool TAF:</h3>
+    <img src="AutomationToolTAF_Minimal.jpg"/>
+    <h2>
+        2. Basic</h2>
+    <ol>
+        <li>
+        Automation tool TAF have to execute Execution List (ExecutionList.txt). Execution
+        List example could be found in Examples folder
+        of TAF Core package. Execution List
+        have to be read line by line and special functions should be run dependently of
+        specified keywords in the first line. 
+        <ol><li><strong>Step</strong> name in format "Application.Step".</li>
+            <li><strong>TestScenario</strong> - general top-level bookmark in log (optional keyword).</li>
+            <li><strong>TestGroup</strong> - bookmark for group of similar test cases (optional
+                keyword)</li>
+            <li><strong>TestCase</strong> - determines beginning of next test case. </li>
+            <li><strong>Assign</strong> - assign value to global variable, that could be passed in any function call.</li>
+        </ol>
+            <p>
+            </p>
+    </li>
+    </ol>
+    
+    <h3>Basic functional scheme of Automation Tool TAF:</h3>
+    <img src="AutomationToolTAF_Basic.jpg"/>
+   
+    <h2>
+        3. Additional</h2>
+    <ol>
+        <li><strong>DependsOn</strong> - parameter for TestCase keyword. Execution of test case
+            with such parameter depends on specified test case execution status. For example:
+        <p>
+        TestCase | TC2 | Test case #2 | DependsOn(TC1) 
+        </p>
+        This record means that TC2 should be executed if TC1 status is 'Passed' only. 
+        <p></p>
+        </li>
+        <li><strong>ExecutionCondition</strong> - parameter for TestCase keyword. Execution
+            of such test case depends on result of specified boolean expression. For example:
+        <p>
+        TestCase | TC1 | Test case #1 <br />
+        Assign   | row | =GetRowNumber(Grid=Users, login=Vasily)<br />
+        TestCase | TC2 | Test case #2 | ExecutionCondition({row}>0)<br /> 
+        ...<br />
+        </p>
+        This record means that TC2 should be executed if value of "row" is greater than
+            0.
+        <p></p>        
+        </li>
+    </ol>
+
+</body>
+</html>

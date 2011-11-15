@@ -1,0 +1,5 @@
+Description: TestSuite containing name of configuration, scenarios and test cases to be executed
+Tests:
+-
+    Configuration: Default
+    ScenarioName: Scenarios.xls

@@ -1,11 +1,11 @@
 ####################
 Lastfm test project
 ####################
-This project contains test for lastfm social network (http://www.last.fm)
-Test based on Sikuli tool (http://sikuli.org)
+This project contains test for lastfm social network (http://www.last.fm).
+Test based on Sikuli tool (http://sikuli.org) and TAF Core (http://sourceforge.net/projects/tafcore/).
 ####################
 
-Launch run.cmd to execute scenarios.
+Launch TAF.exe to execute scenarios.
 Clean.cmd will clean all temporary files.
 
 ########################

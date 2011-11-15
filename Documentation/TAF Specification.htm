@@ -1,0 +1,1069 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>TAF Specification</title>
+    <style type="text/css">
+.verify {color:blue;}
+H1 {
+    counter-reset: header2; 
+}
+H2:before {
+    content: counter(header2) ". ";
+    counter-increment: header2;
+}
+H2 {
+    counter-reset: header3;
+}
+H3:before {
+    content: counter(header2) "." counter(header3) " ";
+    counter-increment: header3;
+}
+H3 {
+    counter-reset: header4;
+}
+H4:before {
+    content: counter(header2) "." counter(header3) "." counter(header4) " ";
+    counter-increment: header4;
+}
+        </style>
+</head>
+<body>
+    <h1>
+        TAF Specification</h1>
+    <h2>
+        Introduction</h2>
+    <p>
+        TAF is a program which allows to perform test automation process. It contains from
+        two modules:</p>
+    <ol>
+        <li>TAF Core - standalone application. Execute Unified Test Scenario, prepare Execution
+            List for Automation Tool TAF and generates Test Results Report</li>
+        <li>Automation Tool TAF - Project for some automation tool, which performs operations
+            listed in Execution List and creates Test Results Summary.</li>
+    </ol>
+    <h2>
+        TAF Core</h2>
+    <h3>
+        Responsibilities</h3>
+    <ul>
+        <li>Read Unified Test Scenario (keyword-driven approach)</li>
+        <li>Read Bug List</li>
+        <li>Generate Execution List</li>
+        <li>Generate Test Result Report by info from Test Results Summary and Bug List.</li>
+    </ul>
+    <h3>
+        Features</h3>
+    <ul>
+        <li>Test Suites support - possibility to run several scenarios at once with the same
+            or different Automation Tool TAF.</li>
+        <li>Test Results Report is created in html and xml formats.</li>
+        <li>Display links to related bugs in Test Results Report.</li>
+        <li>Possibility to mark failed test cases as "known issue". </li>
+        <li>Constants such as server url could be specified in configuration file.</li>
+        <li>TestResultsDirectory parameter is specified in TAF.exe.config. All test results
+            reports (html and xml) have to be created in the folder, specified in this parameter.</li>
+        <li>Load/Repeat keywords support which allows to create data-driven test cases.</li>
+        <li>Generate excel with manual test cases from unified test scenario.</li>
+        <li>Kill automation tool process with all child processes when specified timeout is
+            elapsed.</li>
+    </ul>
+    <h3>
+        Unified Test Scenario</h3>
+    <p>
+        Unified Test Scenario - testing scenario, which contains set of test cases in format
+        which is readable by functional testers and Test Automation Framework.</p>
+    <p>
+        Unitified Test Scenario is an excel file consisting of at least to sheets - Description
+        and TestCases. Description sheet can contains information about test scenario, such
+        as Name, Version, Author, Description and History. TestCases sheet consists from
+        a set of lines. Each line have specific meaning, depending on what is specified
+        in 'Keyword' column. 'Comments' column can contain any comments about specific lines
+        or test cases. Empty line stops test scenario execution.</p>
+    <h4>
+        Columns</h4>
+    <table>
+        <tr>
+            <th>
+                Keyword</th>
+            <th>
+                Name</th>
+            <th>
+                Data #1</th>
+            <th>
+                Data #2</th>
+            <th>
+                Data #3</th>
+            <th>
+                Data #4</th>
+            <th>
+                Data #5</th>
+            <th>
+                Comment</th>
+        </tr>
+    </table>
+    <h4>
+        Basic keywords</h4>
+    <p>
+        <b>Application</b> - specify application or application module where you are testing.</p>
+    <p>
+        <b>TestCase</b> - separate different test cases. Name of test case is specified
+        in 'Name' column, ID is in 'Data #1' column.</p>
+    <p>
+        <b>State</b> - navigate to specific screen in application or set application to
+        specific state. State name specified in 'Name' column, data columns are not used.&nbsp;
+    </p>
+    <p>
+        <b>Action</b> - execute action step, correspond to regular test case step. Name
+        of action is specified in 'Name' column, action parameters are specified in data
+        columns.
+    </p>
+    <p>
+        <b>Verify</b> - verifies something in application, correspond to verification step
+        from expected results. 'Name' of verify is specified in 'Name' column, parameters
+        in data columns.
+    </p>
+    <h4>
+        Additional keywords</h4>
+    <p>
+        <b>Assign</b> - assign value to variable in order to reuse this value in next steps
+        by specifying variable in curve braces ({}). Name of variable is specified in 'Name'
+        column, variable value is specified in 'Data #1' column. Assign keyword also allows
+        to calculate values of expressions, specified in 'Data #1' column and assign final
+        value to variable.<br />
+    </p>
+    <p>
+        <b>Unique</b> - works as simple assign, but adds at the end of variable unique numbers,
+        so every time test case executes variable value will be different. You can specify
+        '#' simbols in order to generate numeric values by specific masks, e.g. Unique|a|###
+        will assign random value from 100 to 999 to variable 'a'; Unique|b|##.## will assign
+        random decimal value, e.g. 29.79. In order to generate unique letters, not digits,
+        use '$' as a mask. You can combine '#','$' and other symbols in order to generate
+        custom variables, e.g. Unique|s|$$$##-auto will generage something like 'dza401-auto'.</p>
+    <p>
+        <b>Load</b> - loads variable value from data table. Data table could be specified
+        in comma- and semi-comma-separated list or as a table on separate sheet of Unified
+        Test Scenario. If using a table on separate sheet it can have column "Description"
+        for each value except for the first. If using the "Repeat" keyword with parameter
+        "For all table rows" or specified test data range "For 5-10 row" that description
+        will be added to the "Description" column of TestResults.xml.</p>
+    <p>
+        <b>Repeat</b> - repeats execution of test case or test group specified number of
+        time or for all rows in data table, which was used in nearest Load keyword. The Repeat
+        keyword with parameter eg. "For 8-12 rows" will to repeat Test Case 5 times with test
+        data from 8 to 12 rows. Please, check 2.3.7 'Load/Repeat keywords usage' for more
+        details.
+         </p>
+    <p>
+        <b>TestGroup</b> - joins logically similar test cases in one group. It allows visually
+        separate different groups of test cases in the detailed log of Automation tool.
+        Name of test group is specified in 'Name' column.</p>
+    <h4>
+        Excel features compatibility</h4>
+    <p>
+        <b>Calculated cells value</b> - Excel calculations can be used for any cell in any
+        column in Unified Test Scenario. However, make sure that calculated cell is of General
+        type, and any numbers used in formulas are stored in cells of Numeric or General
+        type (Format cells-&gt;Category menu). Otherwise, calculated cells can be recognized
+        by TAF improperly.</p>
+    <p>
+        After changing cell type, force Excel to use new type for cell by re-typing cell
+        value (clicking on cell value and pressing Enter will be enough) or using Excel
+        Error Checking tool.</p>
+    <h4>
+        Simple Example</h4>
+    <table>
+        <tr>
+            <th>
+                Keyword</th>
+            <th>
+                Name</th>
+            <th>
+                Data #1</th>
+            <th>
+                Data #2</th>
+            <th>
+                Data #3</th>
+            <th>
+                Data #4</th>
+            <th>
+                Data #5</th>
+            <th>
+                Comment</th>
+        </tr>
+        <tr>
+            <td>
+                <em>Application</em></td>
+            <td>
+                <em>WordPress</em></td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                <em>specify application once at the beginning of test scenario</em></td>
+        </tr>
+        <tr>
+            <td>
+                <b>TestCase</b></td>
+            <td>
+                <b>Login to WordPress</b></td>
+            <td>
+                <b>WP.ST001</b></td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                <b>start of test case</b></td>
+        </tr>
+        <tr>
+            <td>
+                State</td>
+            <td>
+                LoginPage</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                navigate WordPress to Login Page state</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td>
+                Login</td>
+            <td>
+                user2</td>
+            <td>
+                user2</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                login with username and password</td>
+        </tr>
+        <tr class="verify">
+            <td>
+                Verify</td>
+            <td>
+                PageOpened</td>
+            <td>
+                Dashboard</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                verify that page 'Dashboard' is opened</td>
+        </tr>
+    </table>
+    <h4>
+        Assign and Unique keyword usage variants</h4>
+    <table class="confluenceTable">
+        <tr>
+            <th>
+                Keyword</th>
+            <th>
+                Name</th>
+            <th style="width: 109px">
+                Data #1</th>
+            <th>
+                Data #2</th>
+            <th>
+                Data #3</th>
+            <th>
+                Data #4</th>
+            <th>
+                Data #5</th>
+            <th>
+                Comment</th>
+        </tr>
+        <tr>
+            <td>
+                Assign</td>
+            <td>
+                username</td>
+            <td style="width: 109px">
+                admin</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                assign 'admin' to variable 'username'</td>
+        </tr>
+        <tr>
+            <td>
+                Assign</td>
+            <td>
+                firstname</td>
+            <td style="width: 109px">
+                {username}</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                variable 'firstname' contains value 'admin'</td>
+        </tr>
+        <tr>
+            <td>
+                Assign</td>
+            <td>
+                USDRate</td>
+            <td style="width: 109px">
+                2147</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                variable USDRate contains value 2147</td>
+        </tr>
+        <tr>
+            <td>
+                Assign</td>
+            <td>
+                sum</td>
+            <td style="width: 109px">
+                ={USDRate}*5</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                &nbsp;</td>
+            <td>
+                variable sum contains value 10735</td>
+        </tr>
+        <tr>
+            <td>
+                Unique</td>
+            <td>
+                notes</td>
+            <td style="width: 109px">
+                test notes</td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+            </td>
+            <td>
+                variable notes receives unique string value which is started from 'test notes' symbols</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                quantity</td>
+            <td style="width: 109px; height: 21px;">
+                ###</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                quantity is random 3-digit number.</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                firstname</td>
+            <td style="width: 109px; height: 21px">
+                $20</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                first name is a random combinations of letters with length of 20 symbols.</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                price</td>
+            <td style="width: 109px; height: 21px">
+                #7</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                random 7-digit number, the same as #######</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                k</td>
+            <td style="width: 109px; height: 21px">
+                ##.##</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                random number in specified format, e.g. 19.95</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                projectId</td>
+            <td style="width: 109px; height: 21px">
+                A$$-####</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                e.g. Azq-3051</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                Unique</td>
+            <td style="height: 21px">
+                bigRound</td>
+            <td style="width: 109px; height: 21px">
+                ###000000</td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+            </td>
+            <td style="height: 21px">
+                random number, e.g. 148000000</td>
+        </tr>
+    </table>
+    <h4>
+        Load/Repeat keywords usage</h4>
+    <table>
+        <tr>
+            <td>
+                <strong>Keyword</strong></td>
+            <td style="width: 81px">
+                <strong>Name</strong></td>
+            <td>
+                <strong>Data #1</strong></td>
+            <td>Comment for usage</td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                <strong>TestGroup</strong></td>
+            <td style="width: 81px; height: 21px">
+                <strong>TestGroup1</strong></td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test2</strong></td>
+            <td>
+                <strong>TC 2</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Assign</td>
+            <td style="width: 81px">
+                List</td>
+            <td>
+                a=1;a=2;a=3;</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test3</strong></td>
+            <td>
+                <strong>TC 3</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Order</td>
+            <td>
+                From table={List}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                {Order}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+                2</td>
+            <td style="width:350px">Repeat current test case total -two times- in Execution list will be created two full Test3 scenario</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test3</strong></td>
+            <td>
+                <strong>TC 4.1</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Order</td>
+            <td>
+                From table={List}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                {Order}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+                For all table rows</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test 4</strong></td>
+            <td>
+                <strong>TC 4.2</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Order</td>
+            <td>
+                From table={List}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                {Order}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+                For 2-6 rows</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test5</strong></td>
+            <td>
+                <strong>TC 5</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+                3</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test6.1</strong></td>
+            <td>
+                <strong>TC 6.1</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+                For all table rows</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test6.2</strong></td>
+            <td>
+                <strong>TC 6.2</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test7</strong></td>
+            <td>
+                <strong>TC 7</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade.qwe}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestCase</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestGroup</strong></td>
+            <td style="width: 81px">
+                <strong>TestGroup2</strong></td>
+            <td />
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test1</strong></td>
+            <td>
+                <strong>TC2.1</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test4</strong></td>
+            <td>
+                <strong>TC2.2</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade}</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Test1</strong></td>
+            <td>
+                <strong>TC2.3</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestGroup</td>
+            <td>
+                10</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestGroup</strong></td>
+            <td style="width: 81px">
+                <strong>TestGroup3</strong></td>
+            <td />
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Open</strong></td>
+            <td>
+                <strong>TC2.1</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Verify</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td style="height: 21px">
+                <strong>TestCase</strong></td>
+            <td style="width: 81px; height: 21px">
+                <strong>Fill</strong></td>
+            <td style="height: 21px">
+                <strong>TC2.2</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Load</td>
+            <td style="width: 81px">
+                Trade</td>
+            <td>
+                From table=Trades</td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+                {Trade}</td>
+        </tr>
+        <tr>
+            <td>
+                Verify</td>
+            <td style="width: 81px">
+                Failed</td>
+            <td>
+                sdfsdf</td>
+        </tr>
+        <tr>
+            <td>
+                <strong>TestCase</strong></td>
+            <td style="width: 81px">
+                <strong>Save</strong></td>
+            <td>
+                <strong>TC2.3</strong></td>
+        </tr>
+        <tr>
+            <td>
+                Action</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Verify</td>
+            <td style="width: 81px">
+                Passed</td>
+            <td>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                Repeat</td>
+            <td style="width: 81px">
+                TestGroup</td>
+            <td>
+                For all table rows</td>
+        </tr>
+    </table>
+    <br />
+    <h2>TAF Core Advanced Features Description</h2>
+    <h3>Manual test cases generation</h3>
+    <p>In order to generate from unified test scenario test cases for manual passing, you have to specify 'ManualTestCasesDirectory' option in configuration file, e.g. &lt;ManualTestCasesDirectory&gt;Manual
+        Test Cases&lt;/ManualTestCasesDirectory&gt;. After that you have to run TAF.exe
+        for required scenario and this configuration and together with ExecutionList in
+        manual test cases directory will be created excel file called as unified test scenario
+        with postfix '(manual)'.</p>
+    <p>
+        In configuration file you can specified path to template for manual test cases file
+        in 'ManualTestCasesTemplate' option, e.g. &lt;ManualTestCasesTemplate&gt;ManualTestCasesTemplate.xls&lt;/ManualTestCasesTemplate&gt;.
+        Template should be valid Excel file, placed in directory specified in 'ManualTestCasesDirectory'.
+        File should have spreadsheet 'Test Cases' and first line of this spreadsheet should
+        contain the following columns:</p>
+    <ul>
+        <li>ID</li>
+        <li>Application</li>
+        <li>Screen</li>
+        <li>Description</li>
+        <li>Steps</li>
+        <li>Expected Results</li>
+        <li>Comments</li>
+    </ul>
+    <p>
+        Second line in excel file should contains cells with example of formatting all test
+        cases which will be generated.</p>
+    <p>
+        If 'ManualTestCasesTemplate' option is not specified, default built-in TAF Core
+        template for manual test cases will be used.</p>
+    <h3>Test Suite Timeout</h3>
+    <p>Timeout for test suite could be specified. If test is executed, but test suite timeout
+        is elapsed, this test is interrupted and for the last test case in html report in
+        'Details' column message 'Automation tool was interrupted because test suite timeout
+        was elapsed (#)', where '#' - timeout value from test suite. Tests, which should
+        be executed after interrupted one, should not be executed.</p>
+    <h3>
+        <strong>Variables Reuse</strong></h3>
+    <p>
+        Same variable values can be loaded from "Variables.txt" in different tests by automation
+        TAF tool if "Variables.txt" file is stayed untouched. To reset variables, start
+        TAF with --DeleteVariables parameter. "Variables.txt" will be replaced with blank
+        file at test start.</p>
+    <h3>
+        Exit Codes</h3>
+    <p>
+        For each test result there is appropriate exit code:</p>
+    <ul>
+        <li>0 - Passed </li>
+        <li>1 - Failed</li>
+        <li>2 - Error (exception in automation tool occured) </li>
+        <li>3 - Not Executed (dependent test case failed)</li></ul>
+</body>
+</html>

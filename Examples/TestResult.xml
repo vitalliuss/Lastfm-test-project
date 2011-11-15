@@ -1,0 +1,4 @@
+<suite name="TestSuiteWithTwoTests.xls" state="Not Executed" Passed="2" Failed="2" KnownIssues="2" NotExecuted="2" Total="8">
+  <test name="Test1" state="Not Executed" testResultsReportFile="Report.html" detailedResultsFile="Details.mht" Passed="1" Failed="1" KnownIssues="1" NotExecuted="1" Total="4" />
+  <test name="Test2" state="Not Executed" testResultsReportFile="Report.html" detailedResultsFile="Details.mht" Passed="1" Failed="1" KnownIssues="1" NotExecuted="1" Total="4" />
+</suite>

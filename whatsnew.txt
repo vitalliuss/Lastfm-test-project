@@ -1,0 +1,143 @@
+TAF 2.11
+* FIX: Exception if using "Repeat" keyword without "Load" keyword.
+* NEW: Additional information for test results summary if using "Repeat" keyword.
+* NEW: Ability to specify range of data lines to be repeated with "Repeat" keyword.
+* NEW: Creating an additional grouping level in scenario. Is now can to add subgroups.
+* FIX: Exception if access denied to Test Results directory.
+* NEW: Assign Variable by labels in YAML in accordance with YAML specification.
+
+TAF 2.10
+* FIX: Repeated TCs are not included if specified in a range.
+* FIX: Spaces are not removed from Application keyword.
+* FIX: Exception, when test suite hasn't 'Configuration' column.
+
+TAF 2.9.6
+* NEW: Information about each test case in TestResult.xml.
+* FIX: Variables calculation with the same name in different test cases has been fixed.
+
+TAF 2.9
+* NEW: Command line parameter /? support.
+* NEW: Support of "--DeleteVariables" parameter: "Variables.txt" is deleted at test startup.
+* NEW: support of Error status: TestCase can have "Error" status which means error in automation tool.
+* NEW: Test suites can be in YAML format, with or without parameters.
+* NEW: Line breaks support in Test Result summary and HTML report.
+* NEW: Loading test suite from command line.
+* NEW: Parameters can be specified for State keyword
+* CHG: htm and mht log files are renamed as <scenarioNumber_oldFileName> when moved to Test Results folder.
+* CHG: Old test results are renamed before archivation: OldReports\<test_name>_<test_datetime>.
+* FIX: Test Suite can be run from root folder.
+* FIX: Detailed result are copied to Test Results, if working directory is specified.
+* FIX: Specific number of unique letters generation bug fixed.
+* FIX: Odd test groups are added to execution list.
+* FIX: Necessity to create DSN 'Excel Files' was removed.
+
+TAF 2.8
+* NEW: Kill processes which were run by automation tool by timeout.
+* NEW: Possibility to load and assign data out of test case.
+* NEW: Translation of Unified Test Scenarios to Manual Test Scenarios.
+* NEW: Support of "ExecuteBefore" column in test suite.
+* NEW: In hmtl test results report info is written when tool was aborted.
+* NEW: Link creation in test results from text in [].
+* NEW: FoldersToCopy parameter support.
+* NEW: Support '$' in Unique for random letters.
+* FIX: Old reports for different scenarios are remained in test results folder.
+* FIX: All test suites columns except "Configuration" was made optional.
+* FIX: TestScenario and TestSuite are locked during execution.
+* FIX: ExecutionList contains redundant 'Assign' instructions.
+
+TAF 2.7
+* NEW: Support of test data in separate excel files (TestData parameter in configuration).
+* NEW: Events logging to taf-info.log and console.
+* NEW: Test suite execution time in TestResult.xml.
+* FIX: Error in Variables.txt file generation.
+* FIX: Known Issue metrics calculated incorrectly when failure reason contains quotes or non-English symbols.
+* FIX: No errors in log when test case ranges specified incorrectly.
+
+TAF 2.6
+* NEW: Possibility to specify 'KnownIssue' and 'FailureReason' columns in bug list.
+
+TAF 2.5
+* NEW: xsl is created for TestResult.xml which enables to display graphical results when open TestResult.xml in Browser.
+* CHG: support of TestResultsSummary.txt instead of xls with backward compatibility.
+* CHG: TAF.exe-sample.config used as sample config instead of SampleTAFConfig.
+* FIX: Details results are copied with incorrect name.
+* FIX: Test results are not created sometimes.
+* FIX: 'Unique' sometimes generate number with leading zero.
+* FIX: Test result for certain test is absent in TestResult.xml if TestResultsSummary file hasn't been generated during the test.
+* FIX: TAF with scenario with Load writes bad info to Variables.txt.
+
+TAF 2.4
+* Possibility to abort automation tool after specified timeout was implemented.
+* Possibility to save intermediate xml report after each test execution when test suite is run was implemented.
+* Possibility to specify unique value in the following way: Unique|value|##.## in test scenario was implemented.
+* Bug with Default.config file was fixed.
+* Bug with tag h1 was fixed. 
+* Bug "In TestResult.xml path to DetailsLog specified incorrectly" was fixed.
+* Bug with xml reports creation was fixed.
+* Bug "TestScenariosDirectory parameter can not be empty" was fixed.
+
+TAF 2.3
+* Possibility to run AutomationTool without scenario is implemented.
+* Issue with different results directories was fixed. Now there all results are specified in common 'Test Results' directory, path to which could be changed in TAF.exe.config.
+* Set of issues with specified test cases ranges execution was fixed.
+* Test cases dependencies feature was implemented.
+* Load/Repeat keywords support was implemented. 
+* Feature with loading/saving variables to Variables.txt file is implemented.
+
+TAF 2.2
+* Bug with BeginTestCaseID and EndTestCaseID was fixed
+* Bug "TAF Core reads TestResultsSummary incorrectly, if it contains special symbols, e.g. double quotes" was fixed
+* Add in report info about on what server results were run, with which TAFCore version
+* TestResult.xml generation was added
+
+TAF 2.1
+* Bug "TAF ignores test cases ids if they are specified in test suite and contain white spaces" was fixed
+* Trim keyword names
+* Extend functionality of Unique keyword
+* Bug "TAF ignore BeginTestCaseID" was fixed
+* Improve test results creation (mht copy, archivation old results)
+
+TAF 2.0
+* Test Suites support was added.
+
+TAF 1.10
+* 'AcceptableFailureReason' column in BugList support implemented and TestCaseStatus 'Known issue' was introduced.
+* TestResultsReport.htm is created with xml friendly &#160; instead of &nbsp;.
+
+TAF 1.9
+* User can specify several bugs for 1 test case in Bug List.
+* Bug IDs appear as hyperlinks to bugs in Jira in TestResultsReport.htm
+* Implemented links on bugs in TestResultsReport.htm
+
+TAF 1.8
+* Value generated by 'Unique' was decrease.
+
+TAF 1.7
+* Execution Time metric was added.
+
+TAF 1.6
+* ExecutionCondition support was added.
+
+TAF 1.5
+* TestResultReport creation.
+
+TAF 1.4
+* Execution list is now created in ANSI encoding
+* Constants could contain spaced
+* Set of bugs with variables replacement were fixed
+
+TAF 1.3
+* 'TestGroup' keyword added.
+* Ability to run several scenarios. 'TestScenario' setting renamed to 'TestScenarios'.
+* Ability to run all test scenarios from specified in 'PathToTestScenarios' setting directory.
+* 'Constants' setting was added for specifying scripts constants, such as path to AUT.
+* Arithmetic expressions are calculated when variable value is assigned.
+* Ability to run test scenario from/to specified test case id.
+* BugID will be added to 'Comments' column of test results summary, if it is specified for test case in BugList.
+
+TAF 1.1
+* 'Unique' keyword support added.
+
+TAF 1.0
+* Initial version
+
