@@ -1,4 +1,6 @@
 from sikuli import *
+import shutil
+import os
 from log import Log
 from scenarioBase import ScenarioBase
 
@@ -8,7 +10,7 @@ class Lastfm(ScenarioBase):
 		self.log = Log()
 		self.variables = variables
 
-	def firefoxIsOpenState(self, args):
+	def firefoxIsOpenedState(self, args):
 		path = args["Path"]
 		self.log.info("Path to Firefox: "+path)
 		self.closeFirefox(args)
@@ -41,9 +43,36 @@ class Lastfm(ScenarioBase):
 		else:
 			self.log.info("Last Fm main page not opened in "+time+"seconds")
 
-	def LastFmIsOpenedState(self, args):
+	def lastFmIsOpenedState(self, args):
 		if not self.mainPageOpened():
 			self.openLastFm()
+
+	def foobar2000IsOpenedState(self, args):
+		self.closeFoobar2000(args)
+		self.openFoobar2000(args)
+
+	def openFoobar2000(self, args):
+		path = args["Path"]
+		self.log.info("Path to foobar2000: "+path)
+		self.closeFoobar2000(args)
+		App.open(path)
+		#wait foobar2000 to be started. Should be replaced by pretty "wait condition"
+		wait(1)
+		self.maximizeActiveWindow()
+
+	def openMusicFile(self, args):
+		path = args["Path"]
+		self.openFileDialog(args)
+		currentDir = os.getcwd()
+		self.log.info("Current directory: "+currentDir)
+		#TODO: Combine using build-in method
+		fullPath = currentDir+"\\"+path
+		self.set(fullPath)
+		self.log.info("Music file is opened from: "+fullPath)
+
+	def closeFoobar2000(self, args):
+		myApp = App("foobar2000")
+		myApp.close()
 
 	def mainPageOpened(self):
 		if exists("Lastfm_logo.png"):

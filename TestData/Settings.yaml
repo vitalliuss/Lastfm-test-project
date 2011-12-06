@@ -1,4 +1,6 @@
 PathToFirefox: C:\\Program Files\\Mozilla Firefox\\firefox.exe
+PathToFoobar2000: C:\\Program Files\\foobar2000\\foobar2000.exe
+PathToMusicFile: TestData\1.mp3
 login: login
 password: password
 DownloadTime: 15

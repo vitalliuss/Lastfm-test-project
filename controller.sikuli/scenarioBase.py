@@ -65,4 +65,8 @@ class ScenarioBase(object):
 		popup(message)
 		wait(3)
 		
+	def openFileDialog(self, args):
+		type("o", KEY_CTRL)
+		self.log.info("Open file dialog is opened")
+		wait(1)
 	
