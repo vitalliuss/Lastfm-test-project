@@ -2,4 +2,4 @@ Description: TestSuite containing name of configuration, scenarios and test case
 Tests:
 -
     Configuration: Default
-    ScenarioName: Scenarios.xls
+    ScenarioName: SmokeTests.xls
