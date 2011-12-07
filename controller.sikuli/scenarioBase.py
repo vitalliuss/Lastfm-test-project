@@ -69,4 +69,9 @@ class ScenarioBase(object):
 		type("o", KEY_CTRL)
 		self.log.info("Open file dialog is opened")
 		wait(1)
+		
+	def openPage(self, url):
+		type("l", KEY_CTRL) # switch to address field
+		self.set(url)
+		self.log.info("Page "+url+" was opened")
 	

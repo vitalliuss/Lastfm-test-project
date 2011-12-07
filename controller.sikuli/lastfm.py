@@ -5,6 +5,8 @@ from log import Log
 from scenarioBase import ScenarioBase
 
 class Lastfm(ScenarioBase):
+	mainPage = "www.last.fm"
+	loginPage = "https://www.last.fm/login"
 
 	def __init__(self, log, variables):
 		self.log = Log()
@@ -25,9 +27,8 @@ class Lastfm(ScenarioBase):
 		#Not implemented yet
 		#if exists("Window_Maximize_Xp.png"):
 		#	click("Window_Maximize_Xp.png")
-		#Not implemented yet
-		#if exists("Window_Maximize_Seven.png"):
-		#	click("Window_Maximize_Seven.png")
+		if exists("Window_Maximize_Seven.png"):
+			click("Window_Maximize_Seven.png")
 
 	def closeFirefox(self, agrs):
 		myApp = App("Firefox")
@@ -35,8 +36,7 @@ class Lastfm(ScenarioBase):
 
 	def openLastFm(self, args):
 		time = args["Time"]
-		type("l", KEY_CTRL) # switch to address field
-		self.set("www.last.fm")
+		self.openPage(mainPage)
 		wait("Lastfm_logo.png", int(time))
 		if self.mainPageOpened():
 			self.log.info("Last Fm main page opened")
@@ -85,6 +85,12 @@ class Lastfm(ScenarioBase):
 			return True
 		else:
 			return False
+	def logIn(self, args):
+		#TODO: Make work
+		time = args["Time"]
+		if not self.loggedIn():
+			self.openPage(loginPage)
+			wait("Login_label.png", int(time))
 
 	def verifyIAmLoggedIn(self, args):
 		if (self.loggedIn()==True):
